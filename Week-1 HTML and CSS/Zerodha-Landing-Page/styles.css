@@ -5,3 +5,16 @@
 .top-spans:hover {
     color: #659bdb;
 }
+
+.btn {
+    color: white;
+    background-color: #387ed1;
+    border: 1px solid;
+    padding: 10px 20px 10px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #101112;
+}
