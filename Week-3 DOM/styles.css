@@ -1,0 +1,27 @@
+.container {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.todos {
+    justify-content: flex-start;
+}
+
+.todos div {
+    display: flex;
+    justify-content: center;
+    padding: 10px 20px;
+}
+
+.btn {
+    color: white;
+    background-color: #387ed1;
+    border: 1px solid;
+    padding: 10px 20px 10px 20px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: black;
+}
