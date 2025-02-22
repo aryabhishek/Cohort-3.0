@@ -16,7 +16,7 @@ const authenticate = (req, res, next) => {
         const decoded = jsonwebtoken_1.default.verify(token, config_1.SECRET);
         if (decoded) {
             //@ts-ignore
-            req.userId = decoded.id;
+            req["userId"] = decoded.id;
             next();
         }
     }

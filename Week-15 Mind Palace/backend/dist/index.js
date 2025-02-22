@@ -17,6 +17,7 @@ const db_1 = require("./db");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("./config");
 const middleware_1 = require("./middleware");
+const db_2 = require("./db");
 const app = (0, express_1.default)();
 const PORT = 3000;
 app.use(express_1.default.json());
@@ -47,13 +48,29 @@ app.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
     else {
         res.json({ message: "Invalid credentials" });
-        return;
     }
-    res.json({ message: "User logged in" });
 }));
-app.get("/content", middleware_1.authenticate, (req, res) => {
+app.post("/content", middleware_1.authenticate, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const link = req.body.link;
+    const title = req.body.title;
+    yield db_2.ContentModel.create({
+        title: title,
+        link: link,
+        //@ts-ignore
+        userId: req.userId,
+        tags: [],
+    });
     res.json({ message: "Content added" });
-});
+}));
+app.delete("/content", middleware_1.authenticate, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const contentId = req.body.contentId;
+    yield db_2.ContentModel.deleteOne({
+        _id: contentId,
+        //@ts-ignore
+        userId: req.userId,
+    });
+    res.json({ message: "Content deleted" });
+}));
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
 });

@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserModel = void 0;
+exports.ContentModel = exports.UserModel = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const dbPassword = "COrDLt6my5O0W9eK";
 const dbName = "mindPalace";
@@ -50,3 +50,5 @@ const ContentSchema = new mongoose_1.Schema({
 });
 const UserModel = (0, mongoose_1.model)("User", UserSchema);
 exports.UserModel = UserModel;
+const ContentModel = (0, mongoose_1.model)("Content", ContentSchema);
+exports.ContentModel = ContentModel;
