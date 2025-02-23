@@ -18,6 +18,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const config_1 = require("./config");
 const middleware_1 = require("./middleware");
 const db_2 = require("./db");
+const utils_1 = require("./utils");
 const app = (0, express_1.default)();
 const PORT = 3000;
 app.use(express_1.default.json());
@@ -62,6 +63,11 @@ app.post("/content", middleware_1.authenticate, (req, res) => __awaiter(void 0, 
     });
     res.json({ message: "Content added" });
 }));
+app.get("/content", middleware_1.authenticate, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //@ts-ignore
+    const content = yield db_2.ContentModel.find({ userId: req.userId }).populate("userId", "username");
+    res.json({ content });
+}));
 app.delete("/content", middleware_1.authenticate, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const contentId = req.body.contentId;
     yield db_2.ContentModel.deleteOne({
@@ -70,6 +76,34 @@ app.delete("/content", middleware_1.authenticate, (req, res) => __awaiter(void 0
         userId: req.userId,
     });
     res.json({ message: "Content deleted" });
+}));
+app.post("/brain/share", middleware_1.authenticate, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const share = req.body.share;
+    if (share) {
+        yield db_1.LinkModel.create({
+            //@ts-ignore
+            userId: req.userId,
+            hash: (0, utils_1.generateRandomHash)(),
+        });
+        res.json({ message: "Content shared" });
+    }
+    else {
+        res.json({ message: "Content not shared" });
+    }
+}));
+app.get("/brain/:shareLink", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const shareLink = req.params.shareLink;
+    const link = yield db_1.LinkModel.findOne({ hash: shareLink });
+    if (!link) {
+        res.status(404).json({ message: "Link not found" });
+        return;
+    }
+    const content = yield db_2.ContentModel.find({ userId: link.userId });
+    const user = yield db_1.UserModel.findOne({ _id: link.userId });
+    res.json({
+        username: user === null || user === void 0 ? void 0 : user.username,
+        content: content,
+    });
 }));
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);

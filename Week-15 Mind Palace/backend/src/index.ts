@@ -1,9 +1,10 @@
 import express from "express";
-import { UserModel } from "./db";
+import { LinkModel, UserModel } from "./db";
 import jwt from "jsonwebtoken";
 import { SECRET } from "./config";
 import { authenticate } from "./middleware";
 import { ContentModel } from "./db";
+import { generateRandomHash } from "./utils";
 
 const app = express();
 const PORT = 3000;
@@ -52,6 +53,15 @@ app.post("/content", authenticate, async (req, res) => {
     res.json({ message: "Content added" });
 });
 
+app.get("/content", authenticate, async (req, res) => {
+    //@ts-ignore
+    const content = await ContentModel.find({ userId: req.userId }).populate(
+        "userId",
+        "username"
+    );
+    res.json({ content });
+});
+
 app.delete("/content", authenticate, async (req, res) => {
     const contentId = req.body.contentId;
     await ContentModel.deleteOne({
@@ -60,6 +70,36 @@ app.delete("/content", authenticate, async (req, res) => {
         userId: req.userId,
     });
     res.json({ message: "Content deleted" });
+});
+
+app.post("/brain/share", authenticate, async (req, res) => {
+    const share = req.body.share;
+    if (share) {
+        await LinkModel.create({
+            //@ts-ignore
+            userId: req.userId,
+            hash: generateRandomHash(),
+        });
+        res.json({ message: "Content shared" });
+    } else {
+        res.json({ message: "Content not shared" });
+    }
+});
+
+app.get("/brain/:shareLink", async (req, res) => {
+    const shareLink = req.params.shareLink;
+    const link = await LinkModel.findOne({ hash: shareLink });
+    if (!link) {
+        res.status(404).json({ message: "Link not found" });
+        return;
+    }
+    const content = await ContentModel.find({ userId: link.userId });
+
+    const user = await UserModel.findOne({ _id: link.userId });
+    res.json({
+        username: user?.username,
+        content: content,
+    });
 });
 
 app.listen(PORT, () => {
