@@ -6,7 +6,7 @@ interface ButtonProps {
     variant: "primary" | "secondary";
     startIcon?: ReactElement;
     endIcon?: ReactElement;
-    onClick: () => void;
+    onClick?: () => void;
 };
 
 const sizeStyles: any = {
@@ -16,19 +16,20 @@ const sizeStyles: any = {
 }
 
 const variantStyles: any = {
-    "primary": "bg-myPurple-400 text-white",
-    "secondary": "bg-gray-300 text-gray-800",
+    "primary": "bg-myPurple-600 text-white",
+    "secondary": "bg-myGray-200 text-myPurple-600",
 }
 
-const defaultStyles = "flex items-center justify-center";
+const defaultStyles = "transition-colors duration-300 flex items-center justify-center px-4 py-2 rounded-md mx-2 gap-1 text-lg";
 
+const hoverStyles = "hover:bg-[#181818] hover:text-white";
 export default function Button(props: ButtonProps) {
     return (
-        <button className={`${sizeStyles[props.size]} ${variantStyles[props.variant]} ${defaultStyles}`}
+        <button className={`${sizeStyles[props.size]} ${variantStyles[props.variant]} ${defaultStyles} ${hoverStyles}`}
             onClick={props.onClick}>
-                {props.startIcon}
-                {props.text}
-                {props.endIcon}
-            </button>
+            {props.startIcon}
+            {props.text}
+            {props.endIcon}
+        </button>
     );
 }
