@@ -75,31 +75,73 @@ app.delete("/content", authenticate, async (req, res) => {
 app.post("/brain/share", authenticate, async (req, res) => {
     const share = req.body.share;
     if (share) {
+        const existingLink = await LinkModel.findOne({
+            //@ts-ignore
+            userId: req.userId,
+        });
+
+        if (existingLink) {
+            res.json({
+                hash: existingLink.hash,
+            });
+            return;
+        }
+        const hash = generateRandomHash();
         await LinkModel.create({
             //@ts-ignore
             userId: req.userId,
-            hash: generateRandomHash(),
+            hash: hash,
         });
-        res.json({ message: "Content shared" });
+
+        res.json({
+            hash,
+        });
     } else {
-        res.json({ message: "Content not shared" });
+        await LinkModel.deleteOne({
+            //@ts-ignore
+            userId: req.userId,
+        });
+
+        res.json({
+            message: "Removed link",
+        });
     }
 });
 
 app.get("/brain/:shareLink", async (req, res) => {
-    const shareLink = req.params.shareLink;
-    const link = await LinkModel.findOne({ hash: shareLink });
+    const hash = req.params.shareLink;
+
+    const link = await LinkModel.findOne({
+        hash
+    });
+
     if (!link) {
-        res.status(404).json({ message: "Link not found" });
+        res.status(411).json({
+            message: "Sorry incorrect input"
+        })
         return;
     }
-    const content = await ContentModel.find({ userId: link.userId });
+    // userId
+    const content = await ContentModel.find({
+        userId: link.userId
+    })
 
-    const user = await UserModel.findOne({ _id: link.userId });
+    console.log(link);
+    const user = await UserModel.findOne({
+        _id: link.userId
+    })
+
+    if (!user) {
+        res.status(411).json({
+            message: "user not found, error should ideally not happen"
+        })
+        return;
+    }
+
     res.json({
-        username: user?.username,
-        content: content,
-    });
+        username: user.username,
+        content: content
+    })
 });
 
 app.listen(PORT, () => {

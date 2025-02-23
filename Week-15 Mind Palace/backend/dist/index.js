@@ -80,29 +80,64 @@ app.delete("/content", middleware_1.authenticate, (req, res) => __awaiter(void 0
 app.post("/brain/share", middleware_1.authenticate, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const share = req.body.share;
     if (share) {
+        const existingLink = yield db_1.LinkModel.findOne({
+            //@ts-ignore
+            userId: req.userId,
+        });
+        if (existingLink) {
+            res.json({
+                hash: existingLink.hash,
+            });
+            return;
+        }
+        const hash = (0, utils_1.generateRandomHash)();
         yield db_1.LinkModel.create({
             //@ts-ignore
             userId: req.userId,
-            hash: (0, utils_1.generateRandomHash)(),
+            hash: hash,
         });
-        res.json({ message: "Content shared" });
+        res.json({
+            hash,
+        });
     }
     else {
-        res.json({ message: "Content not shared" });
+        yield db_1.LinkModel.deleteOne({
+            //@ts-ignore
+            userId: req.userId,
+        });
+        res.json({
+            message: "Removed link",
+        });
     }
 }));
 app.get("/brain/:shareLink", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const shareLink = req.params.shareLink;
-    const link = yield db_1.LinkModel.findOne({ hash: shareLink });
+    const hash = req.params.shareLink;
+    const link = yield db_1.LinkModel.findOne({
+        hash
+    });
     if (!link) {
-        res.status(404).json({ message: "Link not found" });
+        res.status(411).json({
+            message: "Sorry incorrect input"
+        });
         return;
     }
-    const content = yield db_2.ContentModel.find({ userId: link.userId });
-    const user = yield db_1.UserModel.findOne({ _id: link.userId });
+    // userId
+    const content = yield db_2.ContentModel.find({
+        userId: link.userId
+    });
+    console.log(link);
+    const user = yield db_1.UserModel.findOne({
+        _id: link.userId
+    });
+    if (!user) {
+        res.status(411).json({
+            message: "user not found, error should ideally not happen"
+        });
+        return;
+    }
     res.json({
-        username: user === null || user === void 0 ? void 0 : user.username,
-        content: content,
+        username: user.username,
+        content: content
     });
 }));
 app.listen(PORT, () => {
