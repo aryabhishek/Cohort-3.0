@@ -13,6 +13,10 @@ export default {
           100: "#eeeeef",
           200: "#e6e9ed",
           600: "#95989c"
+        },
+        myBlack: {
+          500: "#1e1f20",
+          700: "#0e0e0e"
         }
       },
     },

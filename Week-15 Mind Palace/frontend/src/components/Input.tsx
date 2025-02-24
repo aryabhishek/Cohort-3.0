@@ -1,8 +1,10 @@
 interface InputProps {
     onChange?: () => void,
-    placeHolder?: string
+    placeHolder?: string,
+    extraStyles?: string,
+    type?: string
 }
 
-export function Input({onChange, placeHolder}: InputProps) {
-    return <input className="transition-colors duration-700 px-4 py-2 rounded-lg m-2 border focus:bg-myPurple-200" type="text" onChange={onChange} placeholder={placeHolder} />
+export function Input({onChange, placeHolder, extraStyles, type = "text"}: InputProps) {
+    return <input className={"transition-colors duration-700 px-4 py-2 rounded-md m-2 border" + ` ${extraStyles}`} type={type} onChange={onChange} placeholder={placeHolder} />
 }

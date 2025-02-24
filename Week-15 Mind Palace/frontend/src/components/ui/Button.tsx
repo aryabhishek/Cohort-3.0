@@ -17,7 +17,7 @@ const sizeStyles: any = {
 
 const variantStyles: any = {
     "primary": "bg-myPurple-600 text-white",
-    "secondary": "bg-myGray-200 text-myPurple-600",
+    "secondary": "bg-gray-300 text-myPurple-600",
 }
 
 const defaultStyles = "transition-colors duration-300 flex items-center justify-center px-4 py-2 rounded-md mx-2 gap-1 text-lg";

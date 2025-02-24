@@ -7,7 +7,7 @@ interface SidebarItemProps {
 
 const defaultStyles = "flex gap-2 pl-4 text-xl items-center";
 
-const hoverStyles = "hover:bg-gray-300 rounded-lg m-4 w-[75%]";
+const hoverStyles = "hover:bg-cyan-100 rounded-lg m-4 w-[75%]";
 
 export function SidebarItem({text, icon}: SidebarItemProps) {
     return <div className={`${defaultStyles} ${hoverStyles}`}>
