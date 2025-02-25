@@ -3,8 +3,11 @@ import { WebSocketServer } from "ws";
 const wss = new WebSocketServer({ port: 8080 });
 
 wss.on("connection", (socket) => {
-    console.log("Client connected");
-    socket.send("Hello from the server!");
+    socket.on("message", (data) => {
+        if (data.toString() === "ping") {
+            socket.send("pong");
+        }
+    })
 });
 
 wss.on("close", () => {
