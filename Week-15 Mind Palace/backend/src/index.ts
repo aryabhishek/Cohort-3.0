@@ -5,11 +5,13 @@ import { SECRET } from "./config";
 import { authenticate } from "./middleware";
 import { ContentModel } from "./db";
 import { generateRandomHash } from "./utils";
+import cors from "cors";
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+app.use(cors());
 
 app.post("/signup", async (req, res) => {
     const username = req.body.username;

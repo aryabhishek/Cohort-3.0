@@ -9,19 +9,22 @@ export function Card({ title, link }: CardProps) {
     return <div className="p-8 m-2 bg-white rounded-md shadow-md border-myGray-200 max-w-72 border">
         <div className="flex justify-between">
             <div className="flex items-center text-xl">
-                <div className="text-myGray-600 pr-2">
+                {/* <div className="text-myGray-600 pr-2">
                     <ShareIcon size="md" />
-                </div>
+                </div> */}
                 <h1>{title}</h1>
             </div>
             <div className="flex items-center">
-                <div className="pr-2 text-myGray-600">
+                {/* <div className="pr-2 text-myGray-600">
                     <a href={link} target="_blank">
                         <ShareIcon size="md" />
                     </a>
-                </div>
+                </div> */}
                 <div className="text-myGray-600">
-                    <ShareIcon size="md" />
+                    <div className="cursor-pointer" onClick={() => { navigator.clipboard.writeText(link ?? ""); alert("Link Copied") }}>
+
+                        <ShareIcon size="md" />
+                    </div>
                 </div>
             </div>
         </div>

@@ -9,9 +9,11 @@ import { useState } from 'react';
 import { SidebarItem } from '../components/SidebarItem';
 import { TwitterIcon } from '../icons/TwitterIcon';
 import { YoutubeIcon } from '../icons/YoutubeIcon';
+import useContent from '../hooks/useContent';
 
 function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [contents, fetchData] = useContent();
 
   function handleShare() {
     console.log('Button clicked!')
@@ -31,9 +33,9 @@ function Dashboard() {
           </div>
         </SideBar>
       </div>
-      <CreateContentModal open={modalOpen} onClose={() => setModalOpen(false)} />
       <div className='bg-myGray-100 p-4 ml-72 min-h-screen relative top-0 left-0'>
         <div className='flex justify-end items-center gap-2 rounded-lg'>
+          <CreateContentModal fetchFn={fetchData} open={modalOpen} onClose={() => setModalOpen(false)} />
           <Button
             size='md' variant='secondary'
             onClick={handleShare} text={"Share Brain"}
@@ -42,9 +44,10 @@ function Dashboard() {
             onClick={handleAddContent} text={"Add Content"}
             startIcon={<PlusIcon size='md' />}></Button>
         </div>
-        <div className='flex gap-4 py-4'>
-          <Card title='Project Ideas' link='https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley' />
-          <Card title='Test'></Card>
+        <div className='flex gap-4 py-4 flex-wrap'>
+          
+          {//@ts-ignore
+          contents.map(({title, link}) => <Card title={title} link={link} />)}
         </div>
       </div>
     </>
